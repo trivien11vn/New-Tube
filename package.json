@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev:all": "concurrently \"bun run dev\" \"bun run dev:webhook\"",
     "dev": "next dev",
+    "dev:webhook": "ngrok http --url=melba-degradable-aesthetically.ngrok-free.dev 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -19,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "concurrently": "9.1.2",
     "date-fns": "^4.1.0",
     "dotenv": "16.4.7",
     "drizzle-orm": "0.39.0",
