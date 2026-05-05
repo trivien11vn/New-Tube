@@ -5,7 +5,7 @@ import { ErrorBoundary } from "react-error-boundary";
 
 export default async function Home() {
   void trpc.hello.prefetch({
-    text: "Tri Viennn"
+    text: "NHTV"
   })
 
   return (
