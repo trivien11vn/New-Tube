@@ -24,6 +24,7 @@ export default function RootLayout({
         <body
           className={inter.className}
         >
+          {/* add TRPC provider inside layout */}
           <TRPCProvider>
             {children}
           </TRPCProvider>
