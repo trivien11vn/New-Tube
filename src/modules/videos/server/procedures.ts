@@ -8,10 +8,6 @@ export const videosRouter = createTRPCRouter({
     create: protectedProcedure.mutation(async ({ ctx }) => {
         const { id: userId } = ctx.user;
 
-        throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Not implemented"
-        })
         const [video] = await db
             .insert(videos)
             .values({
