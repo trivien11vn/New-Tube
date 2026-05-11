@@ -2,8 +2,6 @@ import { db } from "@/db";
 import { videos } from "@/db/schema";
 import { mux } from "@/lib/mux";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
 
 export const videosRouter = createTRPCRouter({
     create: protectedProcedure.mutation(async ({ ctx }) => {
@@ -21,13 +19,15 @@ export const videosRouter = createTRPCRouter({
             .insert(videos)
             .values({
                 userId,
-                title: "Untitled"
+                title: "Untitled",
+                muxStatus: "waiting",
+                muxUploadId: upload.id
             })
             .returning();
 
         return {
             video: video,
-            url: upload.url
+            url: upload.url,
         }
     })
 })

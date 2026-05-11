@@ -1,6 +1,6 @@
 "use client"
 
-import { ResponsiveModal } from "@/components/responsive-dialog"
+import { ResponsiveModal } from "@/components/responsive-modal"
 import { Button } from "@/components/ui/button"
 import { StudioUploader } from "@/modules/studio/ui/components/studio-uploader"
 import { trpc } from "@/trpc/client"
