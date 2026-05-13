@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import { integer, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 
@@ -11,6 +11,10 @@ export const users = pgTable("users", {
     updatedAt: timestamp("updated_at").defaultNow().notNull()
 }, (t) => [uniqueIndex("clerk_id_idx").on(t.clerkId)])
 
+export const videoVisibility = pgEnum("video_visibility", [
+    "private",
+    "public",
+]);
 
 export const categories = pgTable("categories", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -37,6 +41,10 @@ export const videos = pgTable("videos", {
     muxPlaybackId: text("mux_playback_id").unique(),
     muxTrackId: text("mux_track_id").unique(),
     muxTrackStatus: text("mux_track_status"),
+    thumbnailUrl: text("thumbnail_url"),
+    previewUrl: text("preview_url"),
+    duration: integer("duration").default(0).notNull(),
+    visibility: videoVisibility("visibility").default("private").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
