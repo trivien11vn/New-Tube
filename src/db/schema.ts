@@ -13,8 +13,8 @@ export const users = pgTable("users", {
 
 export const videoVisibility = pgEnum("video_visibility", [
     "private",
-    "public",
-]);
+    "public"
+])
 
 export const categories = pgTable("categories", {
     id: uuid("id").primaryKey().defaultRandom(),
