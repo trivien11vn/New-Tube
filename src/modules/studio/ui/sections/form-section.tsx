@@ -61,6 +61,8 @@ export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         id: videoId
     })
 
+    const [categories] = trpc.categories.getMany.useSuspenseQuery();
+
     const form = useForm<z.infer<typeof videoUpdateSchema>>({
         resolver: zodResolver(videoUpdateSchema),
         defaultValues: video
@@ -149,9 +151,28 @@ export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                     <FormLabel>
                                         Category
                                     </FormLabel>
-                                    <FormControl>
-
-                                    </FormControl>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value ?? undefined}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select a category" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {
+                                                categories.map(category => (
+                                                    <SelectItem key={category.id} value={category.id}>
+                                                        {category.name}
+                                                    </SelectItem>
+                                                ))
+                                            }
+                                            <SelectItem value="something">
+                                                Something
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}
