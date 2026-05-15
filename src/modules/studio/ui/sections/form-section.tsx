@@ -36,6 +36,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { videoUpdateSchema } from "@/db/schema";
+import { toast } from 'sonner';
+
 
 
 interface FormSectionProps {
@@ -57,19 +59,33 @@ const FormSectionSkeleton = () => {
 }
 
 export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
+    const utils = trpc.useUtils();
     const [video] = trpc.studio.getOne.useSuspenseQuery({
         id: videoId
-    })
+    });
 
     const [categories] = trpc.categories.getMany.useSuspenseQuery();
+
+    const update = trpc.videos.update.useMutation({
+        onSuccess: () => {
+            utils.studio.getMany.invalidate();
+            utils.studio.getOne.invalidate({
+                id: videoId
+            })
+            toast.success("Video updated successfully")
+        },
+        onError: () => {
+            toast.error("Failed to update video")
+        }
+    });
 
     const form = useForm<z.infer<typeof videoUpdateSchema>>({
         resolver: zodResolver(videoUpdateSchema),
         defaultValues: video
     });
 
-    const onSubmit = async (data: z.infer<typeof videoUpdateSchema>) => {
-        console.log('check val data: ', data);
+    const onSubmit = (data: z.infer<typeof videoUpdateSchema>) => {
+        update.mutate(data);
     };
 
     return (
@@ -81,7 +97,7 @@ export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                         <p className="text-xs text-muted-foreground">Manage your video details</p>
                     </div>
                     <div className="flex items-center gap-x-2">
-                        <Button type="submit" disabled={false} >
+                        <Button type="submit" disabled={update.isPending} >
                             Save
                         </Button>
                         <DropdownMenu>
@@ -168,9 +184,6 @@ export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                                     </SelectItem>
                                                 ))
                                             }
-                                            <SelectItem value="something">
-                                                Something
-                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
