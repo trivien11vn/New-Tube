@@ -5,11 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "image.mux.com",
-      },
-      {
-        protocol: "https",
-        hostname: "utfs.io",
+        hostname: "utfs.io", // UploadThing
       },
     ],
   },
