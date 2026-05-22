@@ -30,7 +30,7 @@ import {
     SelectValue
 } from "@/components/ui/select"
 
-import { CopyCheckIcon, CopyIcon, Globe2Icon, ImagePlusIcon, LockIcon, MoreVerticalIcon, RotateCcwIcon, SparklesIcon, TrashIcon } from "lucide-react";
+import { CopyCheckIcon, CopyIcon, Globe2Icon, ImagePlusIcon, Loader2Icon, LockIcon, MoreVerticalIcon, RotateCcwIcon, SparklesIcon, TrashIcon } from "lucide-react";
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
@@ -101,9 +101,31 @@ export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
         }
     })
 
+    const generateTitle = trpc.videos.generateTitle.useMutation({
+        onSuccess: () => {
+            toast.success("Background job (creating title) started", {
+                description: "This may be take some time"
+            })
+        },
+        onError: () => {
+            toast.error("Something went wrong")
+        }
+    })
+
+    const generateDescription = trpc.videos.generateDescription.useMutation({
+        onSuccess: () => {
+            toast.success("Background job (creating description) started", {
+                description: "This may be take some time"
+            })
+        },
+        onError: () => {
+            toast.error("Something went wrong")
+        }
+    })
+
     const generateThumbnail = trpc.videos.generateThumbnail.useMutation({
         onSuccess: () => {
-            toast.success("Background job started", {
+            toast.success("Background job (creating thumbnail) started", {
                 description: "This may be take some time"
             })
         },
@@ -190,8 +212,23 @@ export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Title
-                                            {/* TODO: add AI generate button */}
+                                            <div className="flex items-center gap-x-2">
+                                                Title
+                                                <Button
+                                                    size="icon"
+                                                    variant="outline"
+                                                    type="button"
+                                                    className="rounded-full size-3 [&_svg]:size-3"
+                                                    onClick={() => generateTitle.mutate({ id: videoId })}
+                                                    disabled={generateTitle.isPending}
+                                                >
+                                                    {
+                                                        generateTitle.isPending ?
+                                                            <Loader2Icon className="animate-spin" />
+                                                            : <SparklesIcon />
+                                                    }
+                                                </Button>
+                                            </div>
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -209,8 +246,23 @@ export const FormSectionSuspense = ({ videoId }: FormSectionProps) => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Description
-                                            {/* TODO: add AI generate button */}
+                                            <div className="flex items-center gap-x-2">
+                                                Description
+                                                <Button
+                                                    size="icon"
+                                                    variant="outline"
+                                                    type="button"
+                                                    className="rounded-full size-3 [&_svg]:size-3"
+                                                    onClick={() => generateDescription.mutate({ id: videoId })}
+                                                    disabled={generateDescription.isPending}
+                                                >
+                                                    {
+                                                        generateDescription.isPending ?
+                                                            <Loader2Icon className="animate-spin" />
+                                                            : <SparklesIcon />
+                                                    }
+                                                </Button>
+                                            </div>
                                         </FormLabel>
                                         <FormControl>
                                             <Textarea
