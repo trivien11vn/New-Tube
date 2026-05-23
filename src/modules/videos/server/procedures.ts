@@ -45,7 +45,8 @@ export const videosRouter = createTRPCRouter({
         }),
     generateThumbnail: protectedProcedure
         .input(z.object({
-            id: z.string().uuid()
+            id: z.string().uuid(),
+            prompt: z.string().min(10)
         }))
         .mutation(async ({ ctx, input }) => {
             const { id: userId } = ctx.user;
@@ -53,7 +54,8 @@ export const videosRouter = createTRPCRouter({
                 url: `${process.env.UPSTASH_WORKFLOW_URL}/api/videos/workflows/thumbnail`,
                 body: {
                     userId,
-                    videoId: input.id
+                    videoId: input.id,
+                    prompt: input.prompt
                 },
                 retries: 3
             })
