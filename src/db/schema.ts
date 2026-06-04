@@ -21,6 +21,29 @@ export const videoVisibility = pgEnum("video_visibility", [
     "public"
 ])
 
+export const subcriptions = pgTable("subscriptions", {
+    viewerId: uuid("viewer_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+    creatorId: uuid("creator_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull()
+}, (t) => [
+    primaryKey({
+        name: "subscriptions_pk",
+        columns: [t.viewerId, t.creatorId]
+    })
+])
+
+export const subscriptionRelations = relations(subcriptions, ({ one }) => ({
+    viewerId: one(users, {
+        fields: [subcriptions.viewerId],
+        references: [users.id]
+    }),
+    creatorId: one(users, {
+        fields: [subcriptions.creatorId],
+        references: [users.id]
+    })
+}))
+
 export const categories = pgTable("categories", {
     id: uuid("id").primaryKey().defaultRandom(),
     name: text("name").notNull().unique(),
@@ -63,7 +86,9 @@ export const videoSelectSchema = createSelectSchema(videos);
 export const userRelations = relations(users, ({ many }) => ({
     videos: many(videos),
     videoViews: many(videoViews),
-    videoReactions: many(videoReactions)
+    videoReactions: many(videoReactions),
+    subscriptions: many(subcriptions),
+    subscribers: many(subcriptions)
 }))
 
 export const videoRelations = relations(videos, ({ one, many }) => ({
