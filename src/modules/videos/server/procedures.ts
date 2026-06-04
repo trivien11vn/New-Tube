@@ -27,9 +27,20 @@ export const videosRouter = createTRPCRouter({
                 userId = user.id;
             }
 
-
+            const viewerReactions = db.$with("viewer_reactions").as(
+                db
+                    .select({
+                        videoId: videoReactions.videoId,
+                        type: videoReactions.type
+                    })
+                    .from(videoReactions)
+                    .where(
+                        inArray(videoReactions.userId, userId ? [userId] : [])
+                    )
+            );
 
             const [existingVideo] = await db
+                .with(viewerReactions)
                 .select({
                     ...getTableColumns(videos),
                     user: {
@@ -43,11 +54,14 @@ export const videosRouter = createTRPCRouter({
                     dislikeCount: db.$count(videoReactions, and(
                         eq(videoReactions.videoId, videos.id),
                         eq(videoReactions.type, "dislike")
-                    ))
+                    )),
+                    viewerReaction: viewerReactions.type
                 })
                 .from(videos)
                 .innerJoin(users, eq(videos.userId, users.id))
-                .where(eq(videos.id, input.id))
+                .leftJoin(viewerReactions, eq(viewerReactions.videoId, videos.id))
+                .where(eq(videos.id, input.id));
+
 
             if (!existingVideo) {
                 throw new TRPCError({
@@ -228,8 +242,7 @@ export const videosRouter = createTRPCRouter({
                 .where(and(
                     eq(videos.id, input.id),
                     eq(videos.userId, userId)
-                )
-                )
+                ))
                 .returning();
 
             if (!updatedVideo) {

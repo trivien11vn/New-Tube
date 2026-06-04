@@ -74,7 +74,6 @@ export const studioRouter = createTRPCRouter({
 
             const hasMore = data.length > limit;
 
-            // remove the last item if there is more data
             const items = hasMore ? data.slice(0, -1) : data;
 
             // set the next cursor to the last item if there is more data

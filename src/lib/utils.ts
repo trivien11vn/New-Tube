@@ -7,6 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const formatDuration = (duration: number) => {
   const seconds = Math.floor((duration % 60000) / 1000);
+  // vd: duration = 125000 ms => 125000 % 60000 = 5000 => 5000 / 1000 = 5 seconds
 
   const minutes = Math.floor(duration / 60000);
 
