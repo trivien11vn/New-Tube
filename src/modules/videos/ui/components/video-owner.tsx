@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { UserAvatar } from "@/components/user-avatar";
+import { useSubscription } from "@/modules/subcriptions/hooks/use-subscription";
 import { SubscriptionButton } from "@/modules/subcriptions/ui/components/subscription-button";
 import { UserInfo } from "@/modules/users/ui/components/user-info";
 import { VideoGetOneOutput } from "@/modules/videos/types";
@@ -12,10 +13,17 @@ interface VideoOwnerProps {
 }
 
 export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
-    const { userId: clerkUserId } = useAuth();
+    const { userId: clerkUserId, isLoaded } = useAuth();
 
     console.log("check val clerkUserId: ", clerkUserId);
     console.log("check val user.id: ", user.id);
+
+    const { isPending, onClick } = useSubscription({
+        userId: user.id,
+        isSubscribed: user.viewerSubscribed,
+        fromVideoId: videoId
+    })
+
     return (
         <div className="flex items-center sm:items-start justify-between sm:justify-start gap-3 min-w-0">
             <Link href={`/users/${user.id}`}>
@@ -25,7 +33,7 @@ export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
                     <div className="flex flex-col gap-1 min-w-0">
                         <UserInfo size="lg" name={user.name} />
                         <span className="text-sm text-muted-foreground line-clamp-1">
-                            {0} subscribers
+                            {user.subscriberCount} subscribers
                         </span>
                     </div>
                 </div>
@@ -42,9 +50,9 @@ export const VideoOwner = ({ user, videoId }: VideoOwnerProps) => {
                 </Button>
             ) : (
                 <SubscriptionButton
-                    onClick={() => { }}
-                    disabled={false}
-                    isSubscribed={false}
+                    onClick={onClick}
+                    disabled={isPending || !isLoaded}
+                    isSubscribed={user.viewerSubscribed}
                     className="flex"
                 />
             )}
