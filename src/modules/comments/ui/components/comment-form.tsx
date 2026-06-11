@@ -18,10 +18,19 @@ import { toast } from "sonner";
 
 interface CommentFormProps {
     videoId: string;
-    onSuccess: () => void;
+    onSuccess?: () => void;
+    onCancel?: () => void;
+    parentId?: string;
+    variant?: "comment" | "reply";
 }
 
-export const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
+export const CommentForm = ({
+    videoId,
+    parentId,
+    onCancel,
+    onSuccess,
+    variant = "comment"
+}: CommentFormProps) => {
     const { user } = useUser();
     const clerk = useClerk();
 
@@ -46,11 +55,17 @@ export const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
         defaultValues: {
             videoId,
             value: "",
+            parentId: parentId
         }
     })
 
     const handleSubmit = (values: z.infer<typeof commentInsertSchema>) => {
         create.mutate(values)
+    }
+
+    const handleCancel = () => {
+        form.reset();
+        onCancel?.();
     }
 
     return (
@@ -72,7 +87,11 @@ export const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
                                 <FormControl>
                                     <Textarea
                                         {...field}
-                                        placeholder="Add a comment ..."
+                                        placeholder={
+                                            variant === "reply"
+                                                ? "Reply to this comment..."
+                                                : "Add a comment..."
+                                        }
                                         className="resize-none bg-transparent overflow-hidden min-h-0"
                                     />
                                 </FormControl>
@@ -81,11 +100,21 @@ export const CommentForm = ({ videoId, onSuccess }: CommentFormProps) => {
                         )}
                     />
                     <div className="justify-end gap-2 mt-2 flex">
+                        {
+                            onCancel && (
+                                <Button variant="ghost" type="button" onClick={handleCancel}>
+                                    Cancel
+                                </Button>
+                            )
+                        }
                         <Button
+                            disabled={create.isPending}
                             type="submit"
                             size="sm"
                         >
-                            Comment
+                            {
+                                variant === "reply" ? "Reply" : "Comment"
+                            }
                         </Button>
                     </div>
                 </div>
