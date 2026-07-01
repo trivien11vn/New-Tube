@@ -11,6 +11,7 @@ import {
 
 import { UserInfo } from "@/modules/users/ui/components/user-info";
 import { UserAvatar } from "@/components/user-avatar";
+
 import { VideoMenu } from "@/modules/videos/ui/components/video-menu";
 import { VideoThumbnail } from "@/modules/videos/ui/components/video-thumbnail";
 
@@ -48,12 +49,28 @@ interface VideoRowCardProps extends VariantProps<typeof videoRowCardVariants> {
 export const VideoRowCardSkeleton = () => {
     return (
         <div>
-            Skeleton
+            <Skeleton />
         </div>
     )
 }
 
-export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
+export const VideoRowCard = ({
+    data,
+    size,
+    onRemove
+}: VideoRowCardProps) => {
+    const compactViews = useMemo(() => {
+        return Intl.NumberFormat("en", {
+            notation: "compact"
+        }).format(data.viewCount)
+    }, [data.viewCount])
+
+    const compactLikes = useMemo(() => {
+        return Intl.NumberFormat("en", {
+            notation: "compact"
+        }).format(data.likeCount)
+    }, [data.likeCount])
+
     return (
         <div className={videoRowCardVariants({ size })}>
             <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
@@ -79,12 +96,61 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
                         </h3>
                         {
                             size === "default" && (
-                                <p>
-                                    {data.viewCount} views | {data.likeCount} likes
+                                <p className="text-xs text-muted-foreground mt-1s">
+                                    {compactViews} views • {compactLikes} likes
+                                </p>
+                            )
+                        }
+                        {
+                            size === "default" && (
+                                <>
+                                    <div className="flex items-center gap-2 my-3">
+                                        <UserAvatar
+                                            size="sm"
+                                            imageUrl={data.user.imageUrl}
+                                            name={data.user.name}
+                                        />
+                                        <UserInfo size="sm" name={data.user.name} />
+                                    </div>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <p className="text-xs text-muted-foreground w-fit line-clamp-2">
+                                                {data.description ?? "No description"}
+                                            </p>
+                                        </TooltipTrigger>
+                                        <TooltipContent
+                                            side="bottom"
+                                            align="center"
+                                            className="bg-black/70"
+                                        >
+                                            <p>From the video description</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </>
+                            )
+                        }
+                        {
+                            size === "compact" && (
+                                <UserInfo
+                                    size="sm"
+                                    name={data.user.name}
+                                />
+                            )
+                        }
+                        {
+                            size === "compact" && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    {compactViews} views • {compactLikes} likes
                                 </p>
                             )
                         }
                     </Link>
+                    <div className="flex-none">
+                        <VideoMenu
+                            videoId={data.id}
+                            onRemove={onRemove}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
