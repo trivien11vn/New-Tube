@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ListPlusIcon, MoreVerticalIcon, ShareIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
+import { APP_URL } from "@/constants";
 
 interface VideoMenuProps {
     videoId: string;
@@ -18,7 +19,7 @@ interface VideoMenuProps {
 export const VideoMenu = ({ videoId, variant = "ghost", onRemove }: VideoMenuProps) => {
     const onShare = () => {
         // TODO: change if deploy outside of vercel
-        const fullUrl = `${process.env.VERCEL_URL || 'http://localhost:3000'}/videos/${videoId}`;
+        const fullUrl = `${APP_URL ? `https://${APP_URL}` : 'http://localhost:3000'}/videos/${videoId}`;
 
         navigator.clipboard.writeText(fullUrl);
         toast.success("Link copied to clipboard");
