@@ -2,10 +2,8 @@ import { CategoriesSection } from "@/modules/search/ui/sections/categories-secti
 import { ResultsSection } from "@/modules/search/ui/sections/results-section";
 
 interface PageProps {
-    searchParams: {
-        query: string | undefined;
-        categoryId: string | undefined;
-    }
+    query: string | undefined;
+    categoryId: string | undefined;
 }
 
 export const SearchView = ({
