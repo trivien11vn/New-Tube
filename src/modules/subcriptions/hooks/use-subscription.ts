@@ -20,6 +20,7 @@ export const useSubscription = ({
     const subscribe = trpc.subscriptions.create.useMutation({
         onSuccess: () => {
             toast.success("Subscribed successfully!")
+            utils.videos.getManySubscribed.invalidate()
 
             // todo: revalidate subscription getmany, users.getone
             if (fromVideoId) {
@@ -38,6 +39,7 @@ export const useSubscription = ({
     const unsubscribe = trpc.subscriptions.remove.useMutation({
         onSuccess: () => {
             toast.success("Unsubscribed successfully!")
+            utils.videos.getManySubscribed.invalidate()
 
             // todo: revalidate subscription getmany, users.getone
             if (fromVideoId) {
