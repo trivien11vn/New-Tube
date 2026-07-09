@@ -1,5 +1,4 @@
 import { DEFAULT_LIMIT } from "@/constants";
-import { HistoryView } from "@/modules/playlist/ui/views/history-view";
 import { VideosView } from "@/modules/playlist/ui/views/video-view";
 import { HydrateClient, trpc } from "@/trpc/server";
 
@@ -15,6 +14,10 @@ const Page = async ({ params }: PageProps) => {
     void trpc.playlists.getVideos.prefetchInfinite({
         limit: DEFAULT_LIMIT,
         playlistId
+    })
+
+    void trpc.playlists.getOne.prefetch({
+        id: playlistId
     })
 
     return (

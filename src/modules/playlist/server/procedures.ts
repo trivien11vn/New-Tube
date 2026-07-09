@@ -584,8 +584,6 @@ export const playlistsRouter = createTRPCRouter({
             const { id } = input;
             const { id: userId } = ctx.user;
 
-
-
             const [deletedPlaylist] = await db
                 .delete(playlist)
                 .where(
