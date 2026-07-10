@@ -13,7 +13,9 @@ export const users = pgTable("users", {
     name: text("name").notNull(),
     imageUrl: text("image_url").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull()
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    bannerUrl: text("banner_url"),
+    bannerKey: text("banner_key"),
 }, (t) => [uniqueIndex("clerk_id_idx").on(t.clerkId)])
 
 export const videoVisibility = pgEnum("video_visibility", [

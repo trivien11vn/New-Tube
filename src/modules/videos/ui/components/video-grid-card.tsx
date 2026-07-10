@@ -5,7 +5,7 @@ import Link from "next/link";
 
 interface VideoGridCardProps {
     data: VideoGetManyOutput["items"][number];
-    onRemove: () => void;
+    onRemove?: () => void;
 }
 
 export const VideoGridCardSkeleton = () => {
