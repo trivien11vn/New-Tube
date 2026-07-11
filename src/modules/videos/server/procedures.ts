@@ -20,7 +20,7 @@ export const videosRouter = createTRPCRouter({
                 limit: z.number().min(1).max(100)
             })
         )
-        .query(async ({ ctx, input }) => {
+        .query(async ({ input }) => {
             const { cursor, limit } = input;
 
             const viewCountSubquery = db.$count(
@@ -171,7 +171,7 @@ export const videosRouter = createTRPCRouter({
                 limit: z.number().min(1).max(100)
             })
         )
-        .query(async ({ ctx, input }) => {
+        .query(async ({ input }) => {
             const { cursor, limit, categoryId, userId } = input;
 
             const data = await db

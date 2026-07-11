@@ -61,7 +61,7 @@ const PlaylistHeaderSectionSuspense = ({ playlistId }: PlaylistHeaderSectionProp
                 size="icon"
                 className="rounded-full"
                 onClick={() => remove.mutate({ id: playlistId })}
-                disabled={remove.isLoading}
+                disabled={remove.isPending}
             >
                 <Trash2Icon />
             </Button>

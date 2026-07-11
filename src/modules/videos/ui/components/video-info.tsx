@@ -9,7 +9,7 @@ import { useMemo } from "react";
 
 interface VideoInfoProps {
     data: VideoGetManyOutput["items"][number];
-    onRemove: () => void;
+    onRemove?: () => void;
 }
 
 export const VideoInfoSkeleton = () => {
